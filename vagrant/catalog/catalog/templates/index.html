@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+Hello, world!
+List of catagories:
+<ul>
+{% for catagory in catagories %}
+    <li>{{catagory.name}}</li>
+{% endfor %}
+</ul>
+{% endblock %}
