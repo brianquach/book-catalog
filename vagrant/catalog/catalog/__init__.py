@@ -5,7 +5,7 @@ import json
 
 # This app's client Id to generate an access token from Google's OAuth API
 CLIENT_ID = json.loads(
-    open('client_secret.json', 'r').read()
+    open('client_secrets.json', 'r').read()
 )['web']['client_id']
 
 app = Flask(__name__)
