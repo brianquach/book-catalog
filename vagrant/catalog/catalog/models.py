@@ -20,6 +20,16 @@ class User(db.Model):
     def __repr__(self):
         return '<User {0}>'.format(self.email)
 
+    # JSON Serializer
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'address': self.email,
+            'picture': self.picture
+        }
+
 class Catagory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000))
@@ -35,6 +45,13 @@ class Catagory(db.Model):
 
     def __repr__(self):
         return '<Catagory {0}>'.format(self.name)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
 class CatagoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -53,3 +70,12 @@ class CatagoryItem(db.Model):
 
     def __repr__(self):
         return '<CatagoryItem {0}>'.format(self.name)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'picture': self.picture
+        }
