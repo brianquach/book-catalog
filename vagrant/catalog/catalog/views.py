@@ -13,6 +13,7 @@ from flask import (
 )
 from oauth2client import client
 from apiclient import discovery, errors as gErrors
+from dicttoxml import dicttoxml
 import random, string, httplib2, json
 
 
@@ -22,6 +23,7 @@ def dashboard():
     return render_template(
         'index.html'
     )
+
 
 @app.route('/login')
 def login():
@@ -38,6 +40,7 @@ def login():
         state=state
     )
 
+
 @app.route('/server-connect', methods=['POST'])
 def server_oauth():
     authorization_token = request.data
@@ -46,8 +49,8 @@ def server_oauth():
     # Ensure anti-forgery state token is from the expected user making
     # this call
     if state_token != session.get('state'):
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
+        response = jsonify(json.dumps('Invalid state parameter.'), 401)
+        response.status_code = 401
         return response
 
     try:
@@ -61,11 +64,8 @@ def server_oauth():
         # Exchange authorization token for access code
         credentials = flow.step2_exchange(authorization_token)
     except client.FlowExchangeError:
-        response = make_response(
-            json.dumps('Failed to upgrade the authorization code.'),
-            401
-        )
-        response.headers['Content-Type'] = 'application/json'
+        response = jsonify('Failed to upgrade the authorization code.')
+        response.status_code = 401
         return response
 
     # Apply acess token to http object
@@ -79,28 +79,21 @@ def server_oauth():
         token_info = http_request.execute()
     except gErrors.HttpError, err:
         error = json.loads(err.content)
-        response = make_response(
-            json.dumps(error.get('error_description')),
-            400
-        )
-        response.headers['Content-Type'] = 'application/json'
+        response = jsonify(error.get('error_description'))
+        response.status_code = 400
         return response
 
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if token_info['user_id'] != gplus_id:
-        response = make_response(
-            json.dumps('Token\'s user ID doesn\'t match given user ID.'),
-            401
-        )
-        response.headers['Content-Type'] = 'application/json'
+        response = jsonify('Token\'s user ID doesn\'t match given user ID.')
+        response.status_code = 401
         return response
 
     # Verify that the access token is valid for this app.
     if token_info['issued_to'] != CLIENT_ID:
-        response = make_response(
-            json.dumps('Token\'s client ID does not match app\'s.'), 401)
-        response.headers['Content-Type'] = 'application/json'
+        response = jsonify('Token\'s client ID does not match app\'s.')
+        response.status_code = 401
         return response
 
     # stored_credentials = session.get('credentials')
@@ -126,21 +119,17 @@ def server_oauth():
     session['email'] = email
 
     # create a user account if none associated with email
-    user_id = getUserID(email)
+    user_id = get_user_id(email)
     if user_id is None:
-        user_id = createUser(session)
+        user_id = create_user(session)
     session['user_id'] = user_id
     
     flash('you are now logged in as {0}'.format(username))
-    response = make_response(
-        json.dumps(userinfo),
-        200
-    )
-    response.headers['Content-Type'] = 'application/json'
-    return response
+    return jsonify(userinfo)
+
 
 # User Helper Functions
-def createUser(session):
+def create_user(session):
     newUser = User(
         name=session['username'],
         email=session['email'],
@@ -152,14 +141,39 @@ def createUser(session):
     return user.id
 
 
-def getUserInfo(user_id):
+def get_userinfo(user_id):
     user = User.query.filter_by(id=user_id).one()
     return user
 
 
-def getUserID(email):
+def get_user_id(email):
     try:
         user = User.query.filter_by(email=email).one()
         return user.id
     except:
         return None
+
+# JSON Endpoints
+@app.route('/me.json')
+def user_json():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = User.query.filter_by(id=user_id).one()
+        return jsonify(user=user.serialize)
+    return jsonify([])
+
+
+@app.route('/catagory.json')
+def catagory_json():
+    catagories = Catagory.query.all()
+    return jsonify(catagories=[c.serialize for c in catagories])
+
+
+@app.route('/catagory/<int:catagory_id>/items.json')
+def catagory_item_json(catagory_id):
+    catagory = Catagory.query.filter_by(id=catagory_id).one()
+    catagory_items = CatagoryItem.query.filter_by(catagory_id=catagory_id).all()
+    return jsonify(
+        catagory=catagory.name,
+        catagory_items=[ci.serialize for ci in catagory_items]
+    )
