@@ -12,6 +12,7 @@ pip install itsdangerous
 pip install flask-httpauth
 pip install Flask-SQLAlchemy
 pip install --upgrade google-api-python-client
+pip install dicttoxml
 su postgres -c 'createuser -dRS vagrant'
 su vagrant -c 'createdb'
 su vagrant -c 'createdb forum'

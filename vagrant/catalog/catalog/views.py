@@ -153,6 +153,7 @@ def get_user_id(email):
     except:
         return None
 
+
 # JSON Endpoints
 @app.route('/me.json')
 def user_json():
@@ -172,8 +173,62 @@ def catagory_json():
 @app.route('/catagory/<int:catagory_id>/items.json')
 def catagory_item_json(catagory_id):
     catagory = Catagory.query.filter_by(id=catagory_id).one()
-    catagory_items = CatagoryItem.query.filter_by(catagory_id=catagory_id).all()
+    catagory_items = CatagoryItem.\
+        query.\
+        filter_by(catagory_id=catagory_id).\
+        all()
     return jsonify(
         catagory=catagory.name,
         catagory_items=[ci.serialize for ci in catagory_items]
     )
+
+
+@app.route('/me.xml')
+def user_xml():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = User.query.filter_by(id=user_id).one()
+        response = make_response(
+            dicttoxml(user.serialize, custom_root='me', attr_type=False),
+            200
+        )
+    else:
+        response = make_response(
+            '<?xml version="1.0" encoding="UTF-8"?><me></me>',
+            401
+        )
+    response.headers['Content-Type'] = 'text/xml'
+    return response
+
+
+@app.route('/catagory.xml')
+def catagory_xml():
+    catagories = Catagory.query.all()
+    response = make_response(
+        dicttoxml(
+            [c.serialize for c in catagories],
+            custom_root='catagories',
+            attr_type=False
+        ),
+        200
+    )
+    response.headers['Content-Type'] = 'text/xml'
+    return response
+
+
+@app.route('/catagory/<int:catagory_id>/items.xml')
+def catagory_item_xml(catagory_id):
+    catagory = Catagory.query.filter_by(id=catagory_id).one()
+    catagory_items = CatagoryItem.\
+        query.\
+        filter_by(catagory_id=catagory_id).\
+        all()
+    response = make_response(
+        dicttoxml({
+            'name': catagory.name,
+            'items': [ci.serialize for ci in catagory_items]
+        }, custom_root='catagory', attr_type=False),
+        200
+    )
+    response.headers['Content-Type'] = 'text/xml'
+    return response
