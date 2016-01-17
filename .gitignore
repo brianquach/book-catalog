@@ -3,3 +3,4 @@
 *.db
 .*
 !.gitignore
+client_secrets.json
