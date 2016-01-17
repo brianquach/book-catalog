@@ -1,5 +1,6 @@
 from catalog import db
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000))
@@ -29,6 +30,7 @@ class User(db.Model):
             'picture': self.picture
         }
 
+
 class Catagory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000))
@@ -52,6 +54,7 @@ class Catagory(db.Model):
             'name': self.name,
             'items': [ci.serialize for ci in self.catagory_items]
         }
+
 
 class CatagoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

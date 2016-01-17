@@ -1,20 +1,26 @@
-from catalog import app, db, CLIENT_ID
-from catalog.models import User, Catagory, CatagoryItem
-from flask import (
-    Flask,
-    url_for,
-    render_template,
-    redirect,
-    request,
-    flash,
-    jsonify,
-    session,
-    make_response
-)
-from oauth2client import client
-from apiclient import discovery, errors as gErrors
+import httplib2
+import json
+import random
+import string
+from apiclient import discovery
+from apiclient import errors as gErrors
 from dicttoxml import dicttoxml
-import random, string, httplib2, json
+from flask import flash
+from flask import Flask
+from flask import jsonify
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import session
+from flask import url_for
+from oauth2client import client
+from catalog import app
+from catalog import CLIENT_ID
+from catalog import db
+from catalog.models import Catagory
+from catalog.models import CatagoryItem
+from catalog.models import User
 
 
 @app.route('/')
@@ -105,13 +111,13 @@ def server_oauth():
     #     )
     #     response.headers['Content-Type'] = 'application/json'
     #     return response
-    
+
     # Store the access token in the session
     session['credentials'] = credentials.to_json()
     session['gplus_id'] = gplus_id
 
     userinfo = oauth_service.userinfo().get().execute()
-    
+
     email = userinfo['email']
     username = userinfo['name']
     session['username'] = username
@@ -123,7 +129,7 @@ def server_oauth():
     if user_id is None:
         user_id = create_user(session)
     session['user_id'] = user_id
-    
+
     flash('you are now logged in as {0}'.format(username))
     return jsonify(userinfo)
 
