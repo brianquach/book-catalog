@@ -1,3 +1,7 @@
+"""
+Copyright 2016 Brian Quach
+Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE)  # noqa
+"""
 import httplib2
 import json
 import random
@@ -26,6 +30,11 @@ from catalog.models import User
 @app.route('/')
 @app.route('/dashboard')
 def dashboard():
+    """Construct main page.
+
+    Returns:
+        A HTML page representing the index page.
+    """
     return render_template(
         'index.html'
     )
@@ -33,7 +42,14 @@ def dashboard():
 
 @app.route('/login')
 def login():
-    # Create anti-forgery state token
+    """Construct login page.
+
+    Creates and adds an anti-forgery state token to the session for oauth login
+    authentication.
+
+    Returns:
+        A HTML page representing the login page.
+    """
     state = ''.join(
         random.choice(
             string.ascii_uppercase + string.digits
@@ -49,6 +65,27 @@ def login():
 
 @app.route('/server-connect', methods=['POST'])
 def server_oauth():
+    """Authenticate a user using OAuth through Google's API.
+
+    Verifies that the user is the one actually making the call and that the
+    access token return is intended for this application.
+
+    Returns:
+      A userinfo object:
+        family_name: "A String", The user's last name.
+        name: String, The user's full name.
+        picture: String, URL of the user's picture image.
+        locale: String, The user's preferred locale.
+        gender: String, The user's gender.
+        id: String, The obfuscated ID of the user.
+        link: String, URL of the profile page.
+        given_name: String, The user's first name.
+        email: String, The user's email address.
+        hd: String, The hosted domain e.g. example.com if the user is Google
+          apps user.
+        verified_email: Boolean, true if the email address is verified. Always
+          verified because we only return the user's primary email address.
+    """
     authorization_token = request.data
     state_token = request.args.get('state')
 
@@ -136,6 +173,14 @@ def server_oauth():
 
 # User Helper Functions
 def create_user(session):
+    """Add a new user into the database.
+
+    Args:
+      session: object containing user's information from oauth provider.
+
+    Returns:
+      Newly added user object.
+    """
     newUser = User(
         name=session['username'],
         email=session['email'],
@@ -148,11 +193,27 @@ def create_user(session):
 
 
 def get_userinfo(user_id):
+    """Fetches user information.
+
+    Args:
+      user_id: user's id.
+
+    Returns:
+      A user object matching given user id.
+    """
     user = User.query.filter_by(id=user_id).one()
     return user
 
 
 def get_user_id(email):
+    """Fetches user's id.
+
+    Args:
+      email: user's email address.
+
+    Returns:
+      User ID of user with given email address.
+    """
     try:
         user = User.query.filter_by(email=email).one()
         return user.id
@@ -163,6 +224,12 @@ def get_user_id(email):
 # JSON Endpoints
 @app.route('/me.json')
 def user_json():
+    """Fetches JSON representation of logged in user.
+
+    Returns:
+      JSON object of currently logged in user, if user is logged in. Otherwise
+      an empty JSON object.
+    """
     if 'user_id' in session:
         user_id = session['user_id']
         user = User.query.filter_by(id=user_id).one()
@@ -172,12 +239,25 @@ def user_json():
 
 @app.route('/catagory.json')
 def catagory_json():
+    """Fetches JSON representation of all catagories and their items.
+
+    Returns:
+      JSON object of all catagories and their items.
+    """
     catagories = Catagory.query.all()
     return jsonify(catagories=[c.serialize for c in catagories])
 
 
 @app.route('/catagory/<int:catagory_id>/items.json')
 def catagory_item_json(catagory_id):
+    """Fetches JSON representation of all items in a given catagory.
+
+    Args:
+      catagory_id: Id of catagory to fetch items from.
+
+    Returns:
+      JSON object of a catagory and its items.
+    """
     catagory = Catagory.query.filter_by(id=catagory_id).one()
     catagory_items = CatagoryItem.\
         query.\
@@ -191,6 +271,12 @@ def catagory_item_json(catagory_id):
 
 @app.route('/me.xml')
 def user_xml():
+    """Fetches XML representation of logged in user.
+
+    Returns:
+      XML file of currently logged in user, if user is logged in. Otherwise
+      an empty XML file.
+    """
     if 'user_id' in session:
         user_id = session['user_id']
         user = User.query.filter_by(id=user_id).one()
@@ -209,6 +295,11 @@ def user_xml():
 
 @app.route('/catagory.xml')
 def catagory_xml():
+    """Fetches XML representation of all catagories and their items.
+
+    Returns:
+      XML file of all catagories and their items.
+    """
     catagories = Catagory.query.all()
     response = make_response(
         dicttoxml(
@@ -224,6 +315,14 @@ def catagory_xml():
 
 @app.route('/catagory/<int:catagory_id>/items.xml')
 def catagory_item_xml(catagory_id):
+    """Fetches XML representation of all items in a given catagory.
+
+    Args:
+      catagory_id: Id of catagory to fetch items from.
+
+    Returns:
+      XML file of a catagory and its items.
+    """
     catagory = Catagory.query.filter_by(id=catagory_id).one()
     catagory_items = CatagoryItem.\
         query.\

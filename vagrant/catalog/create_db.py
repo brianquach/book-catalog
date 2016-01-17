@@ -1,3 +1,7 @@
+"""
+Copyright 2016 Brian Quach
+Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE)  # noqa
+"""
 from catalog import db
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
