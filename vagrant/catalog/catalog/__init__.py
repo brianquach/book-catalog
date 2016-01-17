@@ -5,7 +5,9 @@ Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog
 import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from oauth2client.file import Storage
 
+G_CREDENTIAL_STORAGE = Storage('credential_storage')
 
 # This app's client Id to generate an access token from Google's OAuth API
 CLIENT_ID = json.loads(
