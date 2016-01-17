@@ -296,6 +296,7 @@ def catagory_item_json(catagory_id):
     )
 
 
+# XML Endpoints
 @app.route('/me.xml')
 def user_xml():
     """Fetches XML representation of logged in user.
