@@ -13,4 +13,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from catalog import view  # noqa
+from catalog import views  # noqa
