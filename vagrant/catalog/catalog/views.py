@@ -19,9 +19,11 @@ from flask import request
 from flask import session
 from flask import url_for
 from oauth2client import client
+from oauth2client.file import Storage
 from catalog import app
 from catalog import CLIENT_ID
 from catalog import db
+from catalog import G_CREDENTIAL_STORAGE
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
 from catalog.models import User
@@ -64,7 +66,7 @@ def login():
 
 
 @app.route('/server-connect', methods=['POST'])
-def server_oauth():
+def server_oauth_login():
     """Authenticate a user using OAuth through Google's API.
 
     Verifies that the user is the one actually making the call and that the
@@ -149,10 +151,6 @@ def server_oauth():
     #     response.headers['Content-Type'] = 'application/json'
     #     return response
 
-    # Store the access token in the session
-    session['credentials'] = credentials.to_json()
-    session['gplus_id'] = gplus_id
-
     userinfo = oauth_service.userinfo().get().execute()
 
     email = userinfo['email']
@@ -160,6 +158,8 @@ def server_oauth():
     session['username'] = username
     session['picture'] = userinfo['picture']
     session['email'] = email
+    session['gplus_id'] = gplus_id
+    G_CREDENTIAL_STORAGE.put(credentials)
 
     # create a user account if none associated with email
     user_id = get_user_id(email)
@@ -169,6 +169,33 @@ def server_oauth():
 
     flash('you are now logged in as {0}'.format(username))
     return jsonify(userinfo)
+
+
+@app.route('/logout')
+def server_oauth_logout():
+    """Revoke user authentication and deletes user's session information.
+
+    Returns:
+      JSON response detailing a success or failed logout.
+    """
+    credentials = G_CREDENTIAL_STORAGE.get()
+    access_token = credentials.access_token
+    if access_token is None:
+        response = jsonify(json.dumps('Current user not connected.'))
+        response.status_code = 401
+        return response
+
+    credentials.revoke(httplib2.Http())
+    if credentials.access_token_expired:
+        del session['gplus_id']
+        del session['username']
+        del session['email']
+        del session['picture']
+        return jsonify('Successfully disconnected.')
+    else:
+        response = jsonify('Failed to revoke token for given user.')
+        response.status_code = 400
+        return response
 
 
 # User Helper Functions
