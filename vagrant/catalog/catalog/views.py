@@ -158,17 +158,16 @@ def server_oauth_login():
 
     email = userinfo['email']
     username = userinfo['name']
-    session['username'] = username
-    session['picture'] = userinfo['picture']
-    session['email'] = email
-    session['gplus_id'] = gplus_id
-    G_CREDENTIAL_STORAGE.put(credentials)
-
     # create a user account if none associated with email
     user_id = get_user_id(email)
     if user_id is None:
         user_id = create_user(session)
     session['user_id'] = user_id
+    session['username'] = username
+    session['picture'] = userinfo['picture']
+    session['email'] = email
+    session['gplus_id'] = gplus_id
+    G_CREDENTIAL_STORAGE.put(credentials)
 
     flash('you are now logged in as {0}'.format(username))
     return jsonify(userinfo)
@@ -194,6 +193,7 @@ def server_oauth_logout():
         del session['email']
         del session['picture']
         del session['state']
+        del session['user_id']
         return jsonify(message='Successfully disconnected.')
     else:
         response = jsonify('Failed to revoke token for given user.')
