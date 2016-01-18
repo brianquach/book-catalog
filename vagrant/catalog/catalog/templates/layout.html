@@ -5,16 +5,37 @@ Copyright 2016 -->
 <html lang="en">
     <head>
         <title>{% block title %}{% endblock %} - Item Catalog</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}" />
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap-responsive.min.css')}}" />
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}" />
         <script src="{{url_for('static', filename='js/jquery-2.1.4.min.js')}}"></script>
+        <script src="https://apis.google.com/js/client:platform.js?onload=googleOauthStart" async defer /></script>
         {% block head %}{% endblock %}
     </head>
     <body>
+        <nav>
+            <span id="logo" class="pull-left">
+                Book Catalog App
+            </span>
+            <ul class="pull-right">
+                <button id="signinButton">Sign in with Google</button>
+                <button type="button" class="btn btn-primary">Logout</button>
+            </ul>
+        </nav>
         <div id="content">
         {% block content %}
         {% endblock %}
         </div>
+        <script type="text/javascript">
+            var catalogOauth = {
+                "ClientID": '{{client_id}}',
+                "StateToken": '{{state}}'
+            };
+            $('#signinButton').click(function() {
+                auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
+            });
+        </script>
         <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/main.js')}}"></script>
         {% block scripts %}{% endblock %}

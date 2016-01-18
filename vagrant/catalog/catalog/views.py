@@ -11,6 +11,7 @@ from apiclient import errors as gErrors
 from dicttoxml import dicttoxml
 from flask import flash
 from flask import Flask
+from flask import g
 from flask import jsonify
 from flask import make_response
 from flask import redirect
@@ -29,43 +30,46 @@ from catalog.models import CatagoryItem
 from catalog.models import User
 
 
+@app.context_processor
+def inject_oauth():
+    """Inject Catalog application oauth information for use by all templates.
+
+    Creates and adds an anti-forgery state token to the session for oauth login
+    authentication.
+
+    This is because the login button will be displayed on all public pages.
+
+    Returns:
+      A dictionary that will contain information for user authentication.
+    """
+    if 'state' in session:
+        state = session['state']
+    else:
+        state = ''.join(
+            random.choice(
+                string.ascii_uppercase + string.digits
+            ) for x in xrange(32)
+        )
+        session['state'] = state
+    information = dict(client_id=CLIENT_ID, state=state)
+    return information
+
+
 @app.route('/')
-@app.route('/dashboard')
+@app.route('/catalog')
 def dashboard():
     """Construct main page.
 
     Returns:
         A HTML page representing the index page.
     """
+    g.client_id = CLIENT_ID
     return render_template(
         'index.html'
     )
 
 
-@app.route('/login')
-def login():
-    """Construct login page.
-
-    Creates and adds an anti-forgery state token to the session for oauth login
-    authentication.
-
-    Returns:
-        A HTML page representing the login page.
-    """
-    state = ''.join(
-        random.choice(
-            string.ascii_uppercase + string.digits
-        ) for x in xrange(32)
-    )
-    session['state'] = state
-    return render_template(
-        'login.html',
-        client_id=CLIENT_ID,
-        state=state
-    )
-
-
-@app.route('/server-connect', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def server_oauth_login():
     """Authenticate a user using OAuth through Google's API.
 
@@ -90,7 +94,6 @@ def server_oauth_login():
     """
     authorization_token = request.data
     state_token = request.args.get('state')
-
     # Ensure anti-forgery state token is from the expected user making
     # this call
     if state_token != session.get('state'):
@@ -179,9 +182,8 @@ def server_oauth_logout():
       JSON response detailing a success or failed logout.
     """
     credentials = G_CREDENTIAL_STORAGE.get()
-    access_token = credentials.access_token
-    if access_token is None:
-        response = jsonify(json.dumps('Current user not connected.'))
+    if credentials is None:
+        response = jsonify(message='Current user not connected.')
         response.status_code = 401
         return response
 
@@ -191,7 +193,8 @@ def server_oauth_logout():
         del session['username']
         del session['email']
         del session['picture']
-        return jsonify('Successfully disconnected.')
+        del session['state']
+        return jsonify(message='Successfully disconnected.')
     else:
         response = jsonify('Failed to revoke token for given user.')
         response.status_code = 400
