@@ -19,8 +19,11 @@ Copyright 2016 -->
                 Book Catalog App
             </span>
             <ul class="pull-right">
+                {% if is_logged_in %}
+                Welcome {{user_name}}! <button id="signoutButton" type="button" class="btn btn-default">Logout</button>
+                {% else %}
                 <button id="signinButton">Sign in with Google</button>
-                <button type="button" class="btn btn-primary">Logout</button>
+                {% endif %}
             </ul>
         </nav>
         <div id="content">
@@ -34,6 +37,9 @@ Copyright 2016 -->
             };
             $('#signinButton').click(function() {
                 auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
+            });
+            $('#signoutButton').click(function() {
+                singOut();
             });
         </script>
         <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>

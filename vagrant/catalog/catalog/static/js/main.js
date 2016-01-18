@@ -19,7 +19,6 @@ function signInCallback(authResult) {
         // Hide the sign-in button now that the user is authorized, for example:
         $('#signinButton').attr('style', 'display: none');
 
-        // Send the code to the server
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8000/login?state=' + catalogOauth.StateToken,
@@ -37,3 +36,12 @@ function signInCallback(authResult) {
     }
 }
 
+function singOut() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8000/logout',
+        success: function() {
+            document.location.reload(true);
+        }
+    });
+}
