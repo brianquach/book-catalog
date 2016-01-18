@@ -7,6 +7,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from oauth2client.file import Storage
 
+
+# Used to store and retrieve google's credential object for api calls
 G_CREDENTIAL_STORAGE = Storage('credential_storage')
 
 # This app's client Id to generate an access token from Google's OAuth API
