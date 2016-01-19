@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Brian's Book Catalog {% endblock %}
+{% block title %}{{name}}{% endblock %}
 
 {% block content %}
 <div id="catagory-menu">
@@ -12,6 +12,11 @@
     </ul>
 </div>
 <div id="page-content">
-    <h3>Newest Books</h3>
+    <h3>{{name}} Books</h3>
+    <ul>
+        {% for item in items %}
+            <li><a href="/book/{{item.id}}">{{item.name}}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

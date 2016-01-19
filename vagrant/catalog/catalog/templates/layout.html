@@ -16,23 +16,29 @@ Copyright 2016 -->
     <body>
         <nav>
             <span id="logo" class="pull-left">
-                Book Catalog App
+                <h1>Book Catalog</h1>
             </span>
-            <ul class="pull-right">
+            <div class="user-account-nav pull-right">
                 {% if is_logged_in %}
-                Welcome {{user_name}}! <button id="signoutButton" type="button" class="btn btn-default">Logout</button>
+                <span>Welcome {{user_name}}!</span>
+                <ul>
+                    <li>Add Book Item</li>
+                    <li>
+                        <button id="signoutButton" type="button" class="btn btn-default">Logout</button>
+                    </li>
+                </ul>
                 {% else %}
                 <button id="signinButton">Sign in with Google</button>
                 {% endif %}
-            </ul>
+            </div>
         </nav>
-        
+
         <div id="content">
-        {% block content %}
-        {% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
 
-        <footer class="text-right">
+        <footer class="text-center">
             Copyright 2016 <a href="https://github.com/brianquach/udacity-nano-fullstack-catalog/">Brian Quach</a<
         </footer>
         <script type="text/javascript">

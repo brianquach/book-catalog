@@ -71,14 +71,59 @@ def inject_oauth():
 @app.route('/')
 @app.route('/catalog')
 def dashboard():
-    """Construct main page.
+    """Catalog main page.
 
     Returns:
         A HTML page representing the index page.
     """
-    g.client_id = CLIENT_ID
+    catagories = Catagory.query.all()
     return render_template(
-        'index.html'
+        'index.html',
+        catagories=catagories
+    )
+
+
+@app.route('/catagory/<int:catagory_id>/item')
+def catagory(catagory_id):
+    """Catagory page.
+
+    Lists items belonging to the catagory for users to view. Allow a user who
+    is logged in to create an item.
+
+    Returns:
+      A HTML page representing a catagory.
+    """
+    catagories = Catagory.query.all()
+    catagory = Catagory.query.filter_by(id=catagory_id).one()
+    catagory_items = CatagoryItem.\
+        query.\
+        filter_by(catagory_id=catagory_id).\
+        all()
+    return render_template(
+        'catagory.html',
+        catagories=catagories,
+        name=catagory.name,
+        items=catagory_items
+    )
+
+
+@app.route('/book/<int:catagory_item_id>')
+def catagory_item(catagory_item_id):
+    """Catagory iem page.
+
+    Display catagory item information. If user is authorized, allow user to
+    edit or delete item.
+
+    Returns:
+      A HTML page representing a catagory item.
+    """
+    catagory_item = CatagoryItem.\
+        query.\
+        filter_by(id=catagory_item_id).\
+        one()
+    return render_template(
+        'view_item.html',
+        item=catagory_item
     )
 
 
