@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} Create Catalog Item {% endblock %}
+{% block title %} View Catalog Item {% endblock %}
 
 {% block content %}
 <img src="{{item.picture}}" height="100" width="100"><br />
@@ -9,4 +9,8 @@
 <p>
     {{item.description}}
 </p>
+
+{% if is_authorized %}
+<a href="">edit</a> | <a href="{{url_for('delete_catagory_item', catagory_id=item.catagory_id, catagory_item_id=item.id)}}">delete</a>
+{% endif %}
 {% endblock %}

@@ -3,6 +3,7 @@
 {% block title %} Create Catalog Item {% endblock %}
 
 {% block content %}
+<h3>Create Book</h3>
 <form method="POST" action="{{url_for('create_catalog_item')}}" enctype="multipart/form-data">
     {{form.csrf_token}}
     {{form.name.label}} {{form.name}}
@@ -11,6 +12,6 @@
     {{form.image.label}} {{form.image}}
     {{form.catagory_id.label}} {{form.catagory_id}}
     <br />
-    <input type="submit" value="Create Book Item">
+    <input type="submit" value="Create Book">
 </form>
 {% endblock %}

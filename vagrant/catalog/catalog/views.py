@@ -84,7 +84,7 @@ def dashboard():
 
 
 @app.route('/catagory/<int:catagory_id>/item')
-def catagory(catagory_id):
+def view_catagory(catagory_id):
     """Catagory page.
 
     Lists items belonging to the catagory for users to view. Allow a user who
@@ -108,7 +108,7 @@ def catagory(catagory_id):
 
 
 @app.route('/book/<int:catagory_item_id>')
-def catagory_item(catagory_item_id):
+def view_catagory_item(catagory_item_id):
     """Catagory iem page.
 
     Display catagory item information. If user is authorized, allow user to
@@ -117,18 +117,22 @@ def catagory_item(catagory_item_id):
     Returns:
       A HTML page representing a catagory item.
     """
+    is_authorized = False
     catagory_item = CatagoryItem.\
         query.\
         filter_by(id=catagory_item_id).\
         one()
+    if 'user_id' in session:
+        is_authorized = catagory_item.user_id == session['user_id']
     return render_template(
         'view_item.html',
-        item=catagory_item
+        item=catagory_item,
+        is_authorized=is_authorized
     )
 
 
 @app.route('/item/create', methods=['GET', 'POST'])
-def create_catalog_item():
+def create_catagory_item():
     """Serve create catagory item page, otherwise create new catagory item.
 
     Image file data is stored to server and saved in the database as a path to
@@ -137,10 +141,10 @@ def create_catalog_item():
     User must be logged in to use this function.
 
     Returns:
-      HTML page, otherwise redirect after a successful POST.
+      HTML page if authorized, otherwise redirect.
     """
     if 'user_id' not in session:
-        return redirect('/catalog')
+        return redirect(url_for('dashboard'))
 
     catagories = Catagory.query.order_by('name').all()
     form = CreateCatalogItemForm(obj=catagories)
@@ -162,9 +166,38 @@ def create_catalog_item():
             )
             db.session.add(catagory_item)
             db.session.commit()
-            return redirect('/catalog')
+            return redirect(url_for('dashboard'))
         
     return render_template('create_item.html', form=form)
+
+
+@app.route(
+    '/catagory/<int:catagory_id>/book/<int:catagory_item_id>/delete',
+    methods=['GET', 'POST']
+)
+def delete_catagory_item(catagory_id, catagory_item_id):
+    """Delete catagory iem page.
+
+    If user is authorized, confirm delete book intention.
+
+    Returns:
+      HTML page if authorized, otherwise redirect.
+    """
+    if 'user_id' not in session:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        catagory_item = CatagoryItem.\
+            query.\
+            filter_by(id=catagory_item_id).\
+            one()
+        db.session.delete(catagory_item)
+        return redirect(url_for('view_catagory', catagory_id=catagory_id))
+    return render_template(
+        'delete_item.html',
+        catagory_id=catagory_id,
+        catagory_item_id=catagory_item_id
+    )
 
 
 @app.route('/login', methods=['POST'])
@@ -256,15 +289,15 @@ def server_oauth_login():
 
     email = userinfo['email']
     username = userinfo['name']
+    session['username'] = username
+    session['picture'] = userinfo['picture']
+    session['email'] = email
+    session['gplus_id'] = gplus_id
     # create a user account if none associated with email
     user_id = get_user_id(email)
     if user_id is None:
         user_id = create_user(session)
     session['user_id'] = user_id
-    session['username'] = username
-    session['picture'] = userinfo['picture']
-    session['email'] = email
-    session['gplus_id'] = gplus_id
     G_CREDENTIAL_STORAGE.put(credentials)
 
     flash('you are now logged in as {0}'.format(username))

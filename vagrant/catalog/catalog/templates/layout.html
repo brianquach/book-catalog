@@ -22,7 +22,7 @@ Copyright 2016 -->
                 {% if is_logged_in %}
                 <span>Welcome {{user_name}}!</span>
                 <ul>
-                    <li>Add Book Item</li>
+                    <li><a href="{{url_for('create_catagory_item')}}">Add Book Item</a></li>
                     <li>
                         <button id="signoutButton" type="button" class="btn btn-default">Logout</button>
                     </li>
