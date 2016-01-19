@@ -114,7 +114,7 @@ elaborate patterns, and memorable characters from the Star Wars universe. The
 lovely packaging includes a board cover with metallic foil stamping.
 """,
     picture='http://ecx.images-amazon.com/images/I/515vhE9IDbL._SY344_BO1,204,203,200_.jpg',  # noqa
-    catagory_id=art.name
+    catagory_id=art.id
 )
 db.session.add(art_book)
 autobiography_book = CatagoryItem(
@@ -241,23 +241,6 @@ the eleven \"nations\" that continue to shape North America
     catagory_id=culture.id
 )
 db.session.add(culture_book)
-comic_book = CatagoryItem(
-    name='The Walking Dead Compendium, Volume 1',
-    author='Robert Kirkman',
-    description="""Introducing the first eight volumes of the fan-favorite, New
-York Times Best Seller series collected into one massive paperback collection!
-Collects The Walking Dead #1-48. This is the perfect collection for any fan of
-the Emmy Award-winning television series on AMC: over one thousand pages
-chronicling the beginning of Robert Kirkman's Eisner Award-winning continuing
-story of survival horror- from Rick Grimes' waking up alone in a hospital, to
-him and his family seeking solace on Hershel's farm, and the controversial
-introduction of Woodbury despot: The Governor. In a world ruled by the dead, we
-are finally forced to finally start living.
-""",
-    picture='http://img2.wikia.nocookie.net/__cb20121223185848/walkingdead/images/e/ee/Walking_dead_compendium_1.jpg',  # noqa
-    catagory_id=comic.id
-)
-db.session.add(comic_book)
 education_book = CatagoryItem(
     name='SAT Study Guide 2015: SAT Prep and Practice Questions',
     author='Sat Study Guide 2015 Team',
