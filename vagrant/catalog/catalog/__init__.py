@@ -16,6 +16,9 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read()
 )['web']['client_id']
 
+# File path where catalog item images will be stored at
+UPLOAD_PATH = 'uploads/'
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

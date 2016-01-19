@@ -21,10 +21,12 @@ from flask import session
 from flask import url_for
 from oauth2client import client
 from oauth2client.file import Storage
+from werkzeug import secure_filename
 from catalog import app
 from catalog import CLIENT_ID
 from catalog import db
 from catalog import G_CREDENTIAL_STORAGE
+from catalog import UPLOAD_PATH
 from catalog.forms import CreateCatalogItemForm
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
@@ -78,6 +80,46 @@ def dashboard():
     return render_template(
         'index.html'
     )
+
+
+@app.route('/item/create', methods=['GET', 'POST'])
+def create_catalog_item():
+    """Serve create catagory item page, otherwise create new catagory item.
+
+    Image file data is stored to server and saved in the database as a path to
+    the stored image on disk.
+
+    User must be logged in to use this function.
+
+    Returns:
+      HTML page, otherwise redirect after a successful POST.
+    """
+    if 'user_id' not in session:
+        return redirect('/catalog')
+
+    catagories = Catagory.query.order_by('name').all()
+    form = CreateCatalogItemForm(obj=catagories)
+    form.catagory_id.choices = [(c.id, c.name) for c in catagories]
+    if (request.method == 'POST'):
+        if form.validate_on_submit():
+            filename = secure_filename(form.image.data.filename)
+            image_file_path = UPLOAD_PATH + filename
+            form.image.data.save(image_file_path)
+            user_id = session['user_id']
+
+            catagory_item = CatagoryItem(
+                name=form.name.data,
+                author=form.author.data,
+                description=form.description.data,
+                picture=image_file_path,
+                catagory_id=form.catagory_id.data,
+                user_id=user_id
+            )
+            db.session.add(catagory_item)
+            db.session.commit()
+            return redirect('/catalog')
+        
+    return render_template('create_item.html', form=form)
 
 
 @app.route('/login', methods=['POST'])
@@ -210,19 +252,6 @@ def server_oauth_logout():
         response = jsonify('Failed to revoke token for given user.')
         response.status_code = 400
         return response
-
-
-@app.route('/item/create', methods=['GET', 'POST'])
-def create_catalog_item():
-    if (request.method == 'POST'):
-        form = CreateCatalogItemForm(request.form)
-        if form.validate_on_submit():
-            return redirect('/success')
-    else:
-        catagories = Catagory.query.order_by('name').all()
-        form = CreateCatalogItemForm(request.form, obj=catagories)
-        form.catagory_id.choices = [(c.id, c.name) for c in catagories]
-    return render_template('create_item.html', form=form)
 
 
 # User Helper Functions
