@@ -1,0 +1,21 @@
+/*
+Copyright 2016 Brian Quach
+Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE)
+*/
+body {
+    background-color: #3B252C;
+}
+nav {
+    height: 100px;
+    padding: 0 25px;
+    background-color: #AEA4BF;
+}
+footer {
+    color: #FFFFFF;
+    padding: 0 25px;
+}
+
+#content {
+    padding: 25px;
+    background-color: #E3E4DB;
+}

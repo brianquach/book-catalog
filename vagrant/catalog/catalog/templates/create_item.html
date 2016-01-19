@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %} Create Catalog Item {% endblock %}
+
+{% block content %}
+<form method="POST" action="url_for('create_catalog_item')">
+    {{form.csrf_token}}
+    {{form.name.label}} {{form.name}}
+    {{form.description.label}} {{form.description}}
+    {{form.image.label}}
+    {{form.catagory_id.label}} {{form.catagory_id}}
+    <br />
+    <input type="submit" value="Create Book Item">
+</form>
+{% endblock %}

@@ -25,6 +25,7 @@ from catalog import app
 from catalog import CLIENT_ID
 from catalog import db
 from catalog import G_CREDENTIAL_STORAGE
+from catalog.forms import CreateCatalogItemForm
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
 from catalog.models import User
@@ -209,6 +210,19 @@ def server_oauth_logout():
         response = jsonify('Failed to revoke token for given user.')
         response.status_code = 400
         return response
+
+
+@app.route('/item/create', methods=['GET', 'POST'])
+def create_catalog_item():
+    if (request.method == 'POST'):
+        form = CreateCatalogItemForm(request.form)
+        if form.validate_on_submit():
+            return redirect('/success')
+    else:
+        catagories = Catagory.query.order_by('name').all()
+        form = CreateCatalogItemForm(request.form, obj=catagories)
+        form.catagory_id.choices = [(c.id, c.name) for c in catagories]
+    return render_template('create_item.html', form=form)
 
 
 # User Helper Functions
