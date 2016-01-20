@@ -4,7 +4,7 @@
 
 {% block content %}
 <h3>Create Book</h3>
-<form method="POST" action="{{url_for('create_catalog_item')}}" enctype="multipart/form-data">
+<form method="POST" action="{{url_for('create_catagory_item')}}" enctype="multipart/form-data">
     {{form.csrf_token}}
     {{form.name.label}} {{form.name}}
     {{form.author.label}} {{form.author}}

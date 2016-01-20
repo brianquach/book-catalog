@@ -57,6 +57,7 @@ def inject_oauth():
 
     username = ''
     is_logged_in = 'user_id' in session
+    print is_logged_in
     if is_logged_in:
         username = session['username']
     information = dict(
@@ -181,7 +182,8 @@ def delete_catagory_item(catagory_id, catagory_item_id):
     If user is authorized, confirm delete book intention.
 
     Returns:
-      HTML page if authorized, otherwise redirect.
+      HTML page if authorized, otherwise redirect. If post respond with JSON
+      object.
     """
     if 'user_id' not in session:
         return redirect(url_for('dashboard'))
@@ -312,25 +314,28 @@ def server_oauth_logout():
     Returns:
       JSON response detailing a success or failed logout.
     """
-    credentials = G_CREDENTIAL_STORAGE.get()
-    if credentials is None:
-        response = jsonify(message='Current user not connected.')
-        response.status_code = 401
-        return response
-
-    credentials.revoke(httplib2.Http())
-    if credentials.access_token_expired:
+    try:
+        credentials = G_CREDENTIAL_STORAGE.get()
+        if credentials is None:
+            response = jsonify(message='Current user not connected.')
+            response.status_code = 401
+            return response
+    
+        credentials.revoke(httplib2.Http())
+    except err:
+        print err
+    finally:
+        if G_CREDENTIAL_STORAGE.get() is not None:
+            G_CREDENTIAL_STORAGE.delete()
         del session['gplus_id']
         del session['username']
         del session['email']
         del session['picture']
         del session['state']
         del session['user_id']
-        return jsonify(message='Successfully disconnected.')
-    else:
-        response = jsonify('Failed to revoke token for given user.')
-        response.status_code = 400
-        return response
+        
+    return jsonify(message='Successfully disconnected.')
+
 
 
 # User Helper Functions

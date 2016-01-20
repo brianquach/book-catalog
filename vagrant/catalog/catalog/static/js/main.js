@@ -1,7 +1,7 @@
 /*
 Copyright 2016 Brian Quach
 Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE)
-*/
+*/  
 // Setup csrf protection for all form-less post ajax calls
 var csrftoken = $('meta[name=csrf-token]').attr('content')
 $.ajaxSetup({
@@ -20,6 +20,7 @@ function googleOauthStart() {
                 client_id: catalogOauth.ClientID,
                 scope: 'openid email'
             });
+            $('#signinButton').removeClass('hide');
         }
     );
 }
@@ -50,7 +51,7 @@ function singOut() {
     $.ajax({
         type: 'GET',
         url: 'http://localhost:8000/logout',
-        success: function() {
+        complete: function() {
             document.location.reload(true);
         }
     });
