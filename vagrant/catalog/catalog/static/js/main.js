@@ -2,6 +2,16 @@
 Copyright 2016 Brian Quach
 Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE)
 */
+// Setup csrf protection for all form-less post ajax calls
+var csrftoken = $('meta[name=csrf-token]').attr('content')
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+        }
+    }
+})
+
 function googleOauthStart() {
     gapi.load(
         'auth2',

@@ -5,6 +5,7 @@ Copyright 2016 -->
 <html lang="en">
     <head>
         <title>{% block title %}{% endblock %} - Item Catalog</title>
+        <meta name="csrf-token" content="{{csrf_token()}}">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}" />
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap-responsive.min.css')}}" />

@@ -192,7 +192,8 @@ def delete_catagory_item(catagory_id, catagory_item_id):
             filter_by(id=catagory_item_id).\
             one()
         db.session.delete(catagory_item)
-        return redirect(url_for('view_catagory', catagory_id=catagory_id))
+        db.session.commit()
+        return jsonify(isDeleted=True)
     return render_template(
         'delete_item.html',
         catagory_id=catagory_id,

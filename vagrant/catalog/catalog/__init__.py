@@ -5,8 +5,8 @@ Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog
 import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CsrfProtect
 from oauth2client.file import Storage
-
 
 # Used to store and retrieve google's credential object for api calls
 G_CREDENTIAL_STORAGE = Storage('credential_storage')
@@ -23,5 +23,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+CsrfProtect(app)
 
 from catalog import views  # noqa
