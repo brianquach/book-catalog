@@ -57,7 +57,6 @@ def inject_oauth():
 
     username = ''
     is_logged_in = 'user_id' in session
-    print is_logged_in
     if is_logged_in:
         username = session['username']
     information = dict(
@@ -123,6 +122,18 @@ def view_catagory_item(catagory_item_id):
         query.\
         filter_by(id=catagory_item_id).\
         one()
+
+    # If there is no user_id associated with catagory_id, then it was created
+    # by the system as test data. Test data hot links to images found on the
+    # internet; otherwise, if there is an image uploaded by a user it will be
+    # in the uploads folder.
+
+    if catagory_item.user_id is not None:
+        catagory_item.picture = url_for(
+            'static',
+            filename='uploads/' + catagory_item.picture
+        )
+        
     if 'user_id' in session:
         is_authorized = catagory_item.user_id == session['user_id']
     return render_template(
@@ -161,7 +172,7 @@ def create_catagory_item():
                 name=form.name.data,
                 author=form.author.data,
                 description=form.description.data,
-                picture=image_file_path,
+                picture=filename,
                 catagory_id=form.catagory_id.data,
                 user_id=user_id
             )
