@@ -19,6 +19,13 @@ footer {
     padding: 0 25px;
 }
 
+.btn-catalog {
+    background-color: #8F6593;
+    background-image: none;
+    border-bottom-color: rgba(0,0,0,0.25);
+    text-shadow: 0 1px 1px #AEA4BF;
+}
+
 #content {
     height: 760px;
     padding: 25px;

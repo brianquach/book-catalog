@@ -28,6 +28,7 @@ from catalog import db
 from catalog import G_CREDENTIAL_STORAGE
 from catalog import UPLOAD_PATH
 from catalog.forms import CreateCatalogItemForm
+from catalog.forms import EditCatalogItemForm
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
 from catalog.models import User
@@ -153,7 +154,7 @@ def create_catagory_item():
     User must be logged in to use this function.
 
     Returns:
-      HTML page if authorized, otherwise redirect.
+      HTML page, otherwise redirect.
     """
     if 'user_id' not in session:
         return redirect(url_for('dashboard'))
@@ -183,6 +184,49 @@ def create_catagory_item():
     return render_template('create_item.html', form=form)
 
 
+@app.route('/book/<int:catagory_item_id>/edit', methods=['GET', 'POST'])
+def edit_catagory_item(catagory_item_id):
+    """Serve edit catagory item page, otherwise edie catagory item.
+
+    User must be logged in to use this function..
+
+    Returns:
+      HTML page, otherwise redirect.
+    """
+    if 'user_id' not in session:
+        return redirect(url_for('dashboard'))
+
+    catagory_item = CatagoryItem.query.filter_by(id=catagory_item_id).one()
+    catagories = Catagory.query.order_by('name').all()
+    form = EditCatalogItemForm(obj=catagories)
+    form.catagory_id.choices = [(c.id, c.name) for c in catagories]
+    if request.method == 'POST':
+        filename = secure_filename(form.image.data.filename)
+        if filename:
+            image_file_path = UPLOAD_PATH + filename
+            form.image.data.save(image_file_path)
+            catagory_item.picture = filename
+        catagory_item.name = form.name.data
+        catagory_item.author = form.author.data
+        catagory_item.description = form.description.data
+        catagory_item.catagory_id = form.catagory_id.data
+        db.session.commit()
+        return redirect(
+            url_for('view_catagory_item', catagory_item_id=catagory_item_id)
+        )
+    else:
+        form.name.data = catagory_item.name
+        form.author.data = catagory_item.author
+        form.description.data = catagory_item.description
+        form.catagory_id.data = catagory_item.catagory_id
+    return render_template(
+        'edit_item.html',
+        form=form,
+        picture=catagory_item.picture,
+        catagory_item_id=catagory_item_id
+    )
+
+
 @app.route(
     '/catagory/<int:catagory_id>/book/<int:catagory_item_id>/delete',
     methods=['GET', 'POST']
@@ -193,7 +237,7 @@ def delete_catagory_item(catagory_id, catagory_item_id):
     If user is authorized, confirm delete book intention.
 
     Returns:
-      HTML page if authorized, otherwise redirect. If post respond with JSON
+      HTML page, otherwise redirect. If POST respond with JSON
       object.
     """
     if 'user_id' not in session:

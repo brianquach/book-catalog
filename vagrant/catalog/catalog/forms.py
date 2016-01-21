@@ -12,3 +12,10 @@ class CreateCatalogItemForm(Form):
     description = TextAreaField('Description')
     catagory_id = SelectField('Catagory', coerce=int)
     image = FileField('Image File')
+
+class EditCatalogItemForm(Form):
+    name = TextField('Name', validators=[validators.DataRequired()])
+    author = TextField('Author')
+    description = TextAreaField('Description')
+    catagory_id = SelectField('Catagory', coerce=int)
+    image = FileField('New Image File')

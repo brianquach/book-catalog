@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %} Edit Catalog Item {% endblock %}
+
+{% block content %}
+<h3>Edit Book</h3>
+<form method="POST" action="{{url_for('edit_catagory_item', catagory_item_id=catagory_item_id)}}" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    {{form.name.label}} {{form.name}}
+    {{form.author.label}} {{form.author}}
+    {{form.description.label}} {{form.description}}
+    {{form.catagory_id.label}} {{form.catagory_id}}
+    <label>Current Image File</label>
+    <input type="text" value="{{picture}}" disabled>
+    {{ form.image.label}} {{form.image}}
+    <br />
+    <input type="submit" value="Save Edits"> |
+    <a href="{{url_for('view_catagory_item', catagory_item_id=catagory_item_id)}}">Back</a>
+</form>
+{% endblock %}
