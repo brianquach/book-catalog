@@ -5,3 +5,4 @@
 !.gitignore
 client_secrets.json
 credential_storage
+uploads/*
