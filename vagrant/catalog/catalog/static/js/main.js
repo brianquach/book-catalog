@@ -35,9 +35,7 @@ function signInCallback(authResult) {
             url: 'http://localhost:8000/login?state=' + catalogOauth.StateToken,
             contentType: 'application/octet-stream; charset=utf-8',
             success: function(result) {
-                if (result['email']) {
-                    document.location.reload(true);
-                }
+                document.location.reload(true);
             },
             processData: false,
             data: authResult['code']
