@@ -459,7 +459,7 @@ def user_json():
     return jsonify([])
 
 
-@app.route('/catagory.json')
+@app.route('/catagories.json')
 def catagory_json():
     """Fetches JSON representation of all catagories and their items.
 
@@ -516,7 +516,7 @@ def user_xml():
     return response
 
 
-@app.route('/catagory.xml')
+@app.route('/catagories.xml')
 def catagory_xml():
     """Fetches XML representation of all catagories and their items.
 
