@@ -3,9 +3,9 @@
 Third project for Full-Stack Web Devloper Nanodegree course; Book Catalog is a web application that catagorizes books into different genres.
 
 Feature list:
-* OAuthentication 2.0 with Google+ Signin
 * View all books in catalog
 * Add, edit, and delete your own books
+* Third party Login using OAuth 2 with Google+ Sign-in
 * RESTful JSON and XML endpoints
 
 ## Table of Contents
@@ -14,7 +14,7 @@ Feature list:
 * [Installation and Run](#installation-and-run)
 * [Helpful Commands](#helpful-commands)
 * [Notes](#notes)
-* [JSON and XML RESTful API Examples](#JSON-and-XML-RESTful-API-Examples)
+* [JSON and XML RESTful API Examples](#json-and-xml-restful-api-examples)
 * [Creator](#creator)
 * [Copyright and license](#copyright-and-license)
 
@@ -28,13 +28,25 @@ Book Catalog is built using Python, and depends on Virtual Box and Vagrant to ru
 ## Installation and Run
 
 In order to install and run Book Catalog follow these instructions:
-* Clone repository: `git clone https://github.com/brianquach/udacity-nano-fullstack-catalog.git` or download the zip [here](https://github.com/brianquach/udacity-nano-fullstack-catalog).
-* Navigate to the directory where you cloned the repo or unzipped the file to.
-* Launch Vagrant VM and SSH into it.
-* Navigate to the Book Catalog file using `cd /vagrant/catalog`.
-* Initialize database and data using `python create_db.py`.
-* Run the Book Catalog server using `python runserver.py`.
-* Open your web browser navigate to 'http://localhost:8000/'.
+* Get source code by either downloading the zip [here](https://github.com/brianquach/udacity-nano-fullstack-catalog) or using git clone: 
+```sh
+git clone https://github.com/brianquach/udacity-nano-fullstack-catalog.git
+```
+* Navigate to the directory where the code was unzipped or cloned to
+* Launch Vagrant VM and SSH into it
+* Navigate to the Book Catalog directory
+```sh 
+cd /vagrant/catalog
+```
+* Initialize database and data
+```sh
+python create_db.py
+````
+* Run the Book Catalog server
+```sh
+python runserver.py
+```
+* Use web browser to navigate to http://localhost:8000/
 
 #### Helpful Commands
 * Launch Vagrant `vagrant up`
@@ -97,8 +109,6 @@ Yields:
 
 `http://localhost:8000/catagory/1/items.json`
 
-**Example retrieving data in XML instead of JSON*
-
 Yields:
 ```json
 {
@@ -116,6 +126,8 @@ Yields:
 ```
 
 `http://localhost:8000/catagory/1/items.xml`
+
+**Example retrieving data in XML instead of JSON*
 
 Yields:
 ```xml
@@ -144,4 +156,4 @@ Brian Quach
 
 ## Copyright and license
 
-Code copyright 2015 Brian Quach. Code released under [the MIT license](https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE).
+Code copyright 2016 Brian Quach. Code released under [the MIT license](https://github.com/brianquach/udacity-nano-fullstack-catalog/blob/master/LICENSE).
