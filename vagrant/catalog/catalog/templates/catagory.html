@@ -1,22 +1,12 @@
-{% extends "layout.html" %}
+{% extends "catagory-menu-layout.html" %}
 
-{% block title %}{{name}}{% endblock %}
+{% block title %} {{name}} Catagory {% endblock %}
 
-{% block content %}
-<div id="catagory-menu">
-    <h3>Genres</h3>
-    <ul>
-    {% for catagory in catagories %}
-        <li><a href="{{url_for('view_catagory', catagory_id=catagory.id)}}">{{catagory.name}}</a></li>
+{% block page_content %}
+<h3>{{name}} Books</h3>
+<ul>
+    {% for item in items %}
+        <li><a href="{{url_for('view_catagory_item', catagory_item_id=item.id)}}">{{item.name}}</a></li>
     {% endfor %}
-    </ul>
-</div>
-<div id="page-content">
-    <h3>{{name}} Books</h3>
-    <ul>
-        {% for item in items %}
-            <li><a href="{{url_for('view_catagory_item', catagory_item_id=item.id)}}">{{item.name}}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+</ul>
 {% endblock %}

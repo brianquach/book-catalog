@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div id="catagory-menu">
+    <h3>Genres</h3>
+    <ul>
+    {% for catagory in catagories %}
+        <li><a href="{{url_for('view_catagory', catagory_id=catagory.id)}}">{{catagory.name}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div id="page-content">
+    {% block page_content %}
+    {% endblock %}
+</div>
+{% endblock %}
