@@ -57,13 +57,16 @@ def inject_oauth():
         session['state'] = state
 
     username = ''
+    picture = ''
     is_logged_in = 'user_id' in session
     if is_logged_in:
         username = session['username']
+        picture = session['picture']
     information = dict(
         client_id=CLIENT_ID,
         state=state,
         user_name=username,
+        picture=picture,
         is_logged_in=is_logged_in
     )
     return information

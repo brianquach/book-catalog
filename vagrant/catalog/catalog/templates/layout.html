@@ -16,18 +16,20 @@ Copyright 2016 -->
     </head>
     <body>
         <nav>
-            <span id="logo" class="pull-left">
-                <h1>Book Catalog</h1>
-            </span>
+            <div id="logo" class="pull-left">
+                <h1><a href="{{url_for('dashboard')}}">Book Catalog</a></h1>
+            </div>
             <div class="user-account-nav pull-right">
                 {% if is_logged_in %}
-                <span>Welcome {{user_name}}!</span>
                 <ul>
                     <li><a href="{{url_for('create_catagory_item')}}">Add Book Item</a></li>
                     <li>
                         <button id="signoutButton" type="button" class="btn btn-default btn-catalog">Logout</button>
                     </li>
                 </ul>
+                <div class="profile-thumbnail">
+                    <img src="{{picture}}" />
+                </div>
                 {% else %}
                 <button id="signinButton" class="hide">Sign in with Google</button>
                 {% endif %}
