@@ -1,9 +1,9 @@
-{% extends "layout.html" %}
+{% extends "action-layout.html" %}
 
-{% block title %} Create Catalog Item {% endblock %}
+{% block title %} Create Book {% endblock %}
 
-{% block content %}
-<h3>Create Book</h3>
+{% block page_heading %}Create Book{% endblock %}
+{% block page_content %}
 <form method="POST" action="{{url_for('create_catagory_item')}}" enctype="multipart/form-data">
     {{form.csrf_token}}
     {{form.name.label}} {{form.name}}

@@ -54,3 +54,7 @@ function singOut() {
         }
     });
 }
+
+function addBook(url) {
+    document.location.href = url;
+}

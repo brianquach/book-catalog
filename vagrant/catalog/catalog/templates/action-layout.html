@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{% block page_heading %}{% endblock %}</h3>
+    </div>
+    <div class="panel-body">
+        {% block page_content %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -6,8 +6,8 @@ body {
     background-color: #3B252C;
 }
 nav {
-    height: 60px;
-    padding: 20px 25px;
+    height: 80px;
+    padding: 0 25px;
     background-color: #AEA4BF;
 }
     #logo a,
@@ -23,16 +23,18 @@ nav {
         border: 1px solid transparent;
         border-radius: 36px;
         overflow: hidden;
-        display: block;
+        margin-top: 5px;
     }
     nav ul {
-        width: 164px;
-        padding: 20px 5px;
+        width: 200px;
+        padding: 0;
+        margin-top: 20px;
         list-style: none;
         float: left;
     }
         nav ul > li {
             float: left;
+            margin-left: 5px;
         }
 
 footer {
@@ -43,30 +45,37 @@ footer {
 .btn-catalog {
     background-color: #8F6593;
     background-image: none;
+    border-color: transparent;
     border-bottom-color: rgba(0,0,0,0.25);
     text-shadow: 0 1px 1px #AEA4BF;
 }
+.btn-catalog:hover {
+    color: #E3E4DB;
+    background-color: #3B252C;
+    transition: .25s;
+}
+
+.panel {
+    border-radius: 5px;
+}
+.panel-body {
+    background-color: #FDFDFD;
+}
 
 #content {
-    height: 760px;
     padding: 25px;
     background-color: #E3E4DB;
 }
     #catagory-menu {
-        width: 120px;
+        width: 150px;
         float: left;
-        background-color: #CDCDCD;
-        border-radius: 3px;
-        padding: 10px 30px;
-        margin-right: 40px;
     }
         #catagory-menu ul {
             margin: 0;
+            padding: 0;
             list-style: none;
         }
     #page-content {
-        background-color: #CDCDCD;
-        border-radius: 3px;
-        padding: 10px 30px;
-        margin-left: 220px;
+        margin: 0;
+        margin-left: 200px;
     }

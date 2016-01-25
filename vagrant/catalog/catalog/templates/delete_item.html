@@ -1,9 +1,9 @@
-{% extends "layout.html" %}
+{% extends "action-layout.html" %}
 
-{% block title %} Delete Catalog Item {% endblock %}
+{% block title %} Delete Book {% endblock %}
 
-{% block content %}
-<h3>Delete Book</h3>
+{% block page_heading %}Delete Book{% endblock %}
+{% block page_content %}
 <p>Are you sure you want to delete?</p>
 <input id="content-delete-btn" type="submit" value="Delete Book"> |
 <a href="{{url_for('view_catagory_item', catagory_item_id=catagory_item_id)}}">No, take me back</a>

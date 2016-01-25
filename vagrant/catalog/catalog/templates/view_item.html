@@ -1,8 +1,9 @@
-{% extends "layout.html" %}
+{% extends "action-layout.html" %}
 
-{% block title %} View Catalog Item {% endblock %}
+{% block title %} View Book {% endblock %}
 
-{% block content %}
+{% block page_heading %}View Book{% endblock %}
+{% block page_content %}
 <img src="{{item.picture}}" height="100" width="100"><br />
 {{item.name}}<br />
 {{item.author}}<br />
