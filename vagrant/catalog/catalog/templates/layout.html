@@ -12,7 +12,6 @@ Copyright 2016 -->
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.css')}}" />
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}" />
-        <script src="https://apis.google.com/js/client:platform.js?onload=googleOauthStart" async defer /></script>
         {% block head %}{% endblock %}
     </head>
     <body>
@@ -36,7 +35,9 @@ Copyright 2016 -->
                     <img src="{{picture}}" width="70" />
                 </div>
                 {% else %}
-                <button id="signinButton" class="hide">Sign in with Google</button>
+                <button id="signinButton" class="btn btn-default btn-catalog">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Google Sign-In
+                </button>
                 {% endif %}
             </div>
         </nav>
@@ -51,7 +52,6 @@ Copyright 2016 -->
         </footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
-        <script src="{{url_for('static', filename='js/main.js')}}"></script>
         <script type="text/javascript">
             var catalogOauth = {
                 "ClientID": '{{client_id}}',
@@ -67,6 +67,8 @@ Copyright 2016 -->
                 addBook("{{url_for('create_catagory_item')}}");
             });
         </script>
+        <script src="{{url_for('static', filename='js/main.js')}}"></script>
+        <script src="https://apis.google.com/js/client:platform.js?onload=googleOauthStart" async defer></script>
         {% block scripts %}{% endblock %}
     </body>
 </html>

@@ -20,7 +20,7 @@ function googleOauthStart() {
                 client_id: catalogOauth.ClientID,
                 scope: 'openid email'
             });
-            $('#signinButton').removeClass('hide');
+            // $('#signinButton').removeClass('hide');
         }
     );
 }

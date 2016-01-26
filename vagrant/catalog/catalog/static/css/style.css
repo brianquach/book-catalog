@@ -36,6 +36,9 @@ nav {
             float: left;
             margin-left: 5px;
         }
+    nav #signinButton {
+        margin-top: 20px;
+    }
 
 footer {
     color: #FFFFFF;
@@ -49,10 +52,17 @@ footer {
     border-bottom-color: rgba(0,0,0,0.25);
     text-shadow: 0 1px 1px #AEA4BF;
 }
-.btn-catalog:hover {
+
+.btn-catalog:hover,
+.btn-catalog:visited,
+.btn-catalog:focus,
+.btn-catalog:active,
+.btn-catalog:active:focus,
+.btn-catalog:active:hover {
     color: #E3E4DB;
     background-color: #3B252C;
     transition: .25s;
+    outline-color: #8F6593;
 }
 
 .panel {
