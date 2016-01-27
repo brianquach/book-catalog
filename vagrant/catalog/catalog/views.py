@@ -231,27 +231,28 @@ def edit_catagory_item(catagory_item_id):
     form = EditCatalogItemForm(obj=catagories)
     form.catagory_id.choices = [(c.id, c.name) for c in catagories]
     if request.method == 'POST':
-        filename = secure_filename(form.image.data.filename)
-        if filename:
-            if catagory_item.picture:
-                os.remove(os.path.join(UPLOAD_PATH, catagory_item.picture))
+        if form.validate_on_submit():
+            filename = secure_filename(form.image.data.filename)
+            if filename:
+                if catagory_item.picture:
+                    os.remove(os.path.join(UPLOAD_PATH, catagory_item.picture))
 
-            item_file_path = os.path.join(UPLOAD_PATH + str(catagory_item.id)) 
-            if not os.path.isdir(item_file_path):
-                os.makedirs(item_file_path)
+                item_file_path = os.path.join(UPLOAD_PATH + str(catagory_item.id)) 
+                if not os.path.isdir(item_file_path):
+                    os.makedirs(item_file_path)
 
-            relative_path = '{0}/{1}'.format(
-                catagory_item.id,
-                filename
-            )
-            image_file_path = UPLOAD_PATH + relative_path
-            form.image.data.save(image_file_path)
-            catagory_item.picture = relative_path
-        catagory_item.name = form.name.data
-        catagory_item.author = form.author.data
-        catagory_item.description = form.description.data
-        catagory_item.catagory_id = form.catagory_id.data
-        db.session.commit()
+                relative_path = '{0}/{1}'.format(
+                    catagory_item.id,
+                    filename
+                )
+                image_file_path = UPLOAD_PATH + relative_path
+                form.image.data.save(image_file_path)
+                catagory_item.picture = relative_path
+            catagory_item.name = form.name.data
+            catagory_item.author = form.author.data
+            catagory_item.description = form.description.data
+            catagory_item.catagory_id = form.catagory_id.data
+            db.session.commit()
         return redirect(
             url_for('view_catagory_item', catagory_item_id=catagory_item_id)
         )

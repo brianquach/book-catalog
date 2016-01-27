@@ -17,9 +17,9 @@ class User(db.Model):
           CatagoryItems; contains a list of catagory_items created by user.
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(1000))
+    name = db.Column(db.String(1000), nullable=False)
     email = db.Column(db.String(1000), nullable=False, unique=True)
-    picture = db.Column(db.String(1000), nullable=True)
+    picture = db.Column(db.String(1000))
     catagory_items = db.relationship(
         'CatagoryItem',
         backref='user',
@@ -127,15 +127,19 @@ class CatagoryItem(db.Model):
       catagory_id: An integer of the catagory that item belongs to.
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(1000))
-    author = db.Column(db.String(1000))
+    name = db.Column(db.String(1000), nullable=False)
+    author = db.Column(db.String(1000), nullable=False)
     description = db.Column(db.Text)
-    picture = db.Column(db.String(1000), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    catagory_id = db.Column(db.Integer, db.ForeignKey('catagory.id'))
+    picture = db.Column(db.String(1000))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    catagory_id = db.Column(
+        db.Integer,
+        db.ForeignKey('catagory.id'),
+        nullable=False
+    )
 
-    def __init__(self, name, author, description, catagory_id, picture=None,
-                 user_id=None):
+    def __init__(self, name, author, catagory_id, description=None,
+                 picture=None, user_id=None):
         """Initialize CatagoryItem.
 
         Args:
