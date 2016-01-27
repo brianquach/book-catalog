@@ -253,7 +253,7 @@ def edit_catagory_item(catagory_item_id):
     return render_template(
         'edit_item.html',
         form=form,
-        item_picture=catagory_item.picture,
+        item=catagory_item,
         catagory_item_id=catagory_item_id
     )
 

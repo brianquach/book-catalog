@@ -2,6 +2,14 @@
 
 {% block title %} Delete Book {% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="{{url_for('dashboard')}}">Home</a></li>
+  <li><a href="{{url_for('view_catagory', catagory_id=catagory_id)}}">Catagory</a></li>
+  <li class="active">Delete</li>
+</ol>
+{% endblock %}
+
 {% block page_heading %}Delete Book{% endblock %}
 {% block page_content %}
 <p>Are you sure you want to delete?</p>

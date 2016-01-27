@@ -2,6 +2,14 @@
 
 {% block title %} View Book {% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="{{url_for('dashboard')}}">Home</a></li>
+  <li><a href="{{url_for('view_catagory', catagory_id=item.catagory_id)}}">Catagory</a></li>
+  <li class="active">View</li>
+</ol>
+{% endblock %}
+
 {% block page_heading %}{{item.name}}{% endblock %}
 {% block page_content %}
 {% if item.picture %}
