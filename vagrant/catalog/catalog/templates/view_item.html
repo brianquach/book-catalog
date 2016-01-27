@@ -2,11 +2,15 @@
 
 {% block title %} View Book {% endblock %}
 
-{% block page_heading %}View Book{% endblock %}
+{% block page_heading %}{{item.name}}{% endblock %}
 {% block page_content %}
-<img src="{{item.picture}}" height="100" width="100"><br />
-{{item.name}}<br />
-{{item.author}}<br />
+<img src="{{item.picture}}" height="100" width="100">
+<br /><br />
+<label>Author</label>
+<p>
+    {{item.author}}
+</p>
+<label>Description</label>
 <p>
     {{item.description}}
 </p>

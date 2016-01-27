@@ -6,11 +6,26 @@
 {% block page_content %}
 <form method="POST" action="{{url_for('create_catagory_item')}}" enctype="multipart/form-data">
     {{form.csrf_token}}
-    {{form.name.label}} {{form.name}}
-    {{form.author.label}} {{form.author}}
-    {{form.description.label}} {{form.description}}
-    {{form.catagory_id.label}} {{form.catagory_id}}
-    {{form.image.label}} {{form.image}}
+    <div class="input-group">
+        {{form.name.label}}<br />
+        {{form.name}}
+    </div>
+    <div class="input-group">
+        {{form.author.label}}<br />
+        {{form.author}}
+    </div>
+    <div class="input-group">
+        {{form.description.label}}<br />
+        {{form.description}}
+    </div>
+    <div class="input-group">
+        {{form.catagory_id.label}}<br />
+        {{form.catagory_id}}
+    </div>
+     <div class="input-group">
+        {{form.image.label}}<br />
+        {{form.image}}
+    </div>
     <br />
     <input type="submit" value="Create Book">
 </form>
