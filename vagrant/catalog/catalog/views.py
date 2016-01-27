@@ -83,8 +83,19 @@ def dashboard():
         A HTML page representing the index page.
     """
     catagories = Catagory.query.all()
+    catagory_items = CatagoryItem.\
+        query.\
+        order_by(CatagoryItem.id.desc()).\
+        limit(9)
+    for catagory_item in catagory_items:
+        if catagory_item.user_id is not None and catagory_item.picture:
+            catagory_item.picture = url_for(
+                'static',
+                filename='uploads/{0}'.format(catagory_item.picture)
+            )
     return render_template(
         'index.html',
+        catagory_items=catagory_items,
         catagories=catagories
     )
 
@@ -105,6 +116,7 @@ def view_catagory(catagory_id):
         query.\
         filter_by(catagory_id=catagory_id).\
         all()
+
     return render_template(
         'catagory.html',
         catagories=catagories,
@@ -139,8 +151,6 @@ def view_catagory_item(catagory_item_id):
             'static',
             filename='uploads/{0}'.format(catagory_item.picture)
         )
-
-        print '2', catagory_item.picture
         
     if 'user_id' in session:
         is_authorized = catagory_item.user_id == session['user_id']

@@ -89,3 +89,16 @@ footer {
         margin: 0;
         margin-left: 200px;
     }
+
+    .image-placeholder {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        padding-top: 80px;
+        font-weight: 800;
+        border: 1px dashed #000;
+    }
+
+    div.book-item {
+        height: 350px;
+    }
