@@ -19,14 +19,14 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000))
     email = db.Column(db.String(1000), nullable=False, unique=True)
-    picture = db.Column(db.String(1000))
+    picture = db.Column(db.String(1000), nullable=True)
     catagory_items = db.relationship(
         'CatagoryItem',
         backref='user',
         lazy='dynamic'
     )
 
-    def __init__(self, name, email, picture):
+    def __init__(self, name, email, picture=None):
         """Initialize User.
 
         Args:
@@ -130,11 +130,11 @@ class CatagoryItem(db.Model):
     name = db.Column(db.String(1000))
     author = db.Column(db.String(1000))
     description = db.Column(db.Text)
-    picture = db.Column(db.String(1000))
+    picture = db.Column(db.String(1000), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     catagory_id = db.Column(db.Integer, db.ForeignKey('catagory.id'))
 
-    def __init__(self, name, author, description, picture, catagory_id,
+    def __init__(self, name, author, description, catagory_id, picture=None,
                  user_id=None):
         """Initialize CatagoryItem.
 

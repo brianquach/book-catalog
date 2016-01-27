@@ -4,8 +4,10 @@
 
 {% block page_heading %}{{item.name}}{% endblock %}
 {% block page_content %}
+{% if item.picture %}
 <img src="{{item.picture}}" height="100" width="100">
 <br /><br />
+{% endif %}
 <label>Author</label>
 <p>
     {{item.author}}

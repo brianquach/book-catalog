@@ -4,6 +4,7 @@ Licensed under MIT (https://github.com/brianquach/udacity-nano-fullstack-catalog
 """
 import httplib2
 import json
+import os
 import random
 import string
 from apiclient import discovery
@@ -17,6 +18,7 @@ from flask import make_response
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from flask import session
 from flask import url_for
 from oauth2client import client
@@ -132,11 +134,13 @@ def view_catagory_item(catagory_item_id):
     # internet; otherwise, if there is an image uploaded by a user it will be
     # in the uploads folder.
 
-    if catagory_item.user_id is not None:
+    if catagory_item.user_id is not None and catagory_item.picture:
         catagory_item.picture = url_for(
             'static',
-            filename='uploads/' + catagory_item.picture
+            filename='uploads/{0}'.format(catagory_item.picture)
         )
+
+        print '2', catagory_item.picture
         
     if 'user_id' in session:
         is_authorized = catagory_item.user_id == session['user_id']
@@ -167,21 +171,34 @@ def create_catagory_item():
     form.catagory_id.choices = [(c.id, c.name) for c in catagories]
     if (request.method == 'POST'):
         if form.validate_on_submit():
-            filename = secure_filename(form.image.data.filename)
-            image_file_path = UPLOAD_PATH + filename
-            form.image.data.save(image_file_path)
             user_id = session['user_id']
 
             catagory_item = CatagoryItem(
                 name=form.name.data,
                 author=form.author.data,
                 description=form.description.data,
-                picture=filename,
                 catagory_id=form.catagory_id.data,
                 user_id=user_id
             )
             db.session.add(catagory_item)
             db.session.commit()
+
+            # Filepath structure saves filename under catagory item ID
+            # directory so there will be no conflict between uploaded pictures
+            # with the same name.
+
+            filename = secure_filename(form.image.data.filename)
+            if filename:
+                relative_path = '{0}/{1}'.format(
+                    catagory_item.id,
+                    filename
+                )
+                image_file_path = UPLOAD_PATH + relative_path
+                os.makedirs(os.path.join(UPLOAD_PATH + str(catagory_item.id)))
+                form.image.data.save(image_file_path)
+                catagory_item.picture = relative_path
+                db.session.commit()
+
             return redirect(url_for('dashboard'))
         
     return render_template('create_item.html', form=form)
@@ -206,9 +223,20 @@ def edit_catagory_item(catagory_item_id):
     if request.method == 'POST':
         filename = secure_filename(form.image.data.filename)
         if filename:
-            image_file_path = UPLOAD_PATH + filename
+            if catagory_item.picture:
+                os.remove(os.path.join(UPLOAD_PATH, catagory_item.picture))
+
+            item_file_path = os.path.join(UPLOAD_PATH + str(catagory_item.id)) 
+            if not os.path.isdir(item_file_path):
+                os.makedirs(item_file_path)
+
+            relative_path = '{0}/{1}'.format(
+                catagory_item.id,
+                filename
+            )
+            image_file_path = UPLOAD_PATH + relative_path
             form.image.data.save(image_file_path)
-            catagory_item.picture = filename
+            catagory_item.picture = relative_path
         catagory_item.name = form.name.data
         catagory_item.author = form.author.data
         catagory_item.description = form.description.data
@@ -251,8 +279,16 @@ def delete_catagory_item(catagory_id, catagory_item_id):
             query.\
             filter_by(id=catagory_item_id).\
             one()
+
+        if catagory_item.picture:
+            relative_path = catagory_item.picture
+            image_file_path = UPLOAD_PATH + relative_path
+            os.remove(image_file_path)
+            os.rmdir(os.path.join(UPLOAD_PATH + str(catagory_item.id)))
+
         db.session.delete(catagory_item)
         db.session.commit()
+
         return jsonify(isDeleted=True)
     return render_template(
         'delete_item.html',
