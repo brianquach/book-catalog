@@ -356,8 +356,10 @@ def server_oauth_login():
     """
     authorization_token = request.data
     state_token = request.args.get('state')
+
     # Ensure anti-forgery state token is from the expected user making
     # this call
+
     if state_token != session.get('state'):
         response = jsonify(json.dumps('Invalid state parameter.'), 401)
         response.status_code = 401
@@ -365,6 +367,7 @@ def server_oauth_login():
 
     try:
         # Create flow object to help aquire user credentials
+
         flow = client.flow_from_clientsecrets(
             'client_secrets.json',
             scope='',
@@ -372,6 +375,7 @@ def server_oauth_login():
         )
 
         # Exchange authorization token for access code
+
         credentials = flow.step2_exchange(authorization_token)
     except client.FlowExchangeError:
         response = jsonify('Failed to upgrade the authorization code.')
@@ -379,10 +383,13 @@ def server_oauth_login():
         return response
 
     # Apply acess token to http object
+
     http_auth = credentials.authorize(httplib2.Http())
 
     access_token = credentials.access_token
+
     # Build service call to google for user profile information
+
     oauth_service = discovery.build('oauth2', 'v2', http_auth)
     http_request = oauth_service.tokeninfo(access_token=access_token)
     try:
@@ -394,6 +401,7 @@ def server_oauth_login():
         return response
 
     # Verify that the access token is used for the intended user.
+
     gplus_id = credentials.id_token['sub']
     if token_info['user_id'] != gplus_id:
         response = jsonify('Token\'s user ID doesn\'t match given user ID.')
@@ -401,6 +409,7 @@ def server_oauth_login():
         return response
 
     # Verify that the access token is valid for this app.
+
     if token_info['issued_to'] != CLIENT_ID:
         response = jsonify('Token\'s client ID does not match app\'s.')
         response.status_code = 401
@@ -424,7 +433,9 @@ def server_oauth_login():
     session['picture'] = userinfo['picture']
     session['email'] = email
     session['gplus_id'] = gplus_id
+
     # create a user account if none associated with email
+
     user_id = get_user_id(email)
     if user_id is None:
         user_id = create_user(session)
@@ -466,7 +477,9 @@ def server_oauth_logout():
     return jsonify(message='Successfully disconnected.')
 
 
-# User Helper Functions
+# User Helper Functions. Code taken and modified from Udacity Authentication &
+# Authorization: OAuth course.
+
 def create_user(session):
     """Add a new user into the database.
 
@@ -517,6 +530,7 @@ def get_user_id(email):
 
 
 # JSON Endpoints
+
 @app.route('/me.json')
 def user_json():
     """Fetches JSON representation of logged in user.
@@ -565,6 +579,7 @@ def catagory_item_json(catagory_id):
 
 
 # XML Endpoints
+
 @app.route('/me.xml')
 def user_xml():
     """Fetches XML representation of logged in user.
