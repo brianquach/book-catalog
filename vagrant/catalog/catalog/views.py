@@ -15,6 +15,7 @@ from flask import Flask
 from flask import g
 from flask import jsonify
 from flask import make_response
+from flask import Markup
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -210,7 +211,12 @@ def create_catagory_item():
 
             flash('{0} successfully added!'.format(catagory_item.name))
             return redirect(url_for('dashboard'))
-
+        else:
+            flash(Markup('''
+                <span class="error">
+                    Please make sure to input a name and author!
+                </span>
+            '''))
     return render_template('create_item.html', form=form)
 
 
@@ -255,8 +261,20 @@ def edit_catagory_item(catagory_item_id):
             catagory_item.description = form.description.data
             catagory_item.catagory_id = form.catagory_id.data
             db.session.commit()
+            flash('{0} successfully edited!'.format(catagory_item.name))
+        else:
+            flash(Markup('''
+                <span class="error">
+                    Please make sure to input a name and author!
+                </span>
+            '''))
+            return render_template(
+                'edit_item.html',
+                form=form,
+                item=catagory_item,
+                catagory_item_id=catagory_item_id
+            )
 
-        flash('{0} successfully edited!'.format(catagory_item.name))
         return redirect(
             url_for('view_catagory_item', catagory_item_id=catagory_item_id)
         )

@@ -45,6 +45,10 @@ footer {
     padding: 0 25px;
 }
 
+.error {
+    color: red;
+}
+
 .btn-catalog {
     background-color: #8F6593;
     background-image: none;
