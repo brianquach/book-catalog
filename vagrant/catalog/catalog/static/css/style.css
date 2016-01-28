@@ -102,3 +102,11 @@ footer {
     div.book-item {
         height: 350px;
     }
+
+div.flash {
+    color: green;
+    border-radius: 5px;
+}
+    div.flash ul {
+        list-style: none;
+    }

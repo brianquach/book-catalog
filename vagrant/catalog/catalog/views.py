@@ -18,7 +18,6 @@ from flask import make_response
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import send_from_directory
 from flask import session
 from flask import url_for
 from oauth2client import client
@@ -209,6 +208,7 @@ def create_catagory_item():
                 catagory_item.picture = relative_path
                 db.session.commit()
 
+            flash('{0} successfully added!'.format(catagory_item.name))
             return redirect(url_for('dashboard'))
         
     return render_template('create_item.html', form=form)
@@ -253,6 +253,8 @@ def edit_catagory_item(catagory_item_id):
             catagory_item.description = form.description.data
             catagory_item.catagory_id = form.catagory_id.data
             db.session.commit()
+
+        flash('{0} successfully edited!'.format(catagory_item.name))
         return redirect(
             url_for('view_catagory_item', catagory_item_id=catagory_item_id)
         )
@@ -300,6 +302,7 @@ def delete_catagory_item(catagory_id, catagory_item_id):
         db.session.delete(catagory_item)
         db.session.commit()
 
+        flash('{0} successfully deleted!'.format(catagory_item.name))
         return jsonify(isDeleted=True)
     return render_template(
         'delete_item.html',
@@ -408,7 +411,7 @@ def server_oauth_login():
     session['user_id'] = user_id
     G_CREDENTIAL_STORAGE.put(credentials)
 
-    flash('you are now logged in as {0}'.format(username))
+    flash('You\'re now logged in as {0}'.format(username))
     return jsonify(userinfo)
 
 
@@ -438,9 +441,9 @@ def server_oauth_logout():
         del session['picture']
         del session['state']
         del session['user_id']
-        
+       
+    flash('Successfully logged out')
     return jsonify(message='Successfully disconnected.')
-
 
 
 # User Helper Functions
