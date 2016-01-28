@@ -7,6 +7,7 @@ Feature list:
 * Add, edit, and delete your own books
 * Third party Login using OAuth 2 with Google+ Sign-in
 * RESTful JSON and XML endpoints
+* CSRF protection with Flask-WTF
 
 ## Table of Contents
 
@@ -105,7 +106,7 @@ Yields:
 
 `http://localhost:8000/catagory/<catagory_id>/items.json`
 
-**Replace '<catagory_id>' with the Id of the catagory you want to the API to pull from*
+**Replace `<catagory_id>` with the Id of the catagory you want to the API to pull from*
 
 `http://localhost:8000/catagory/1/items.json`
 
