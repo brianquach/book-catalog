@@ -6,6 +6,7 @@ from wtforms import TextField
 from wtforms import validators
 from catalog.models import Catagory
 
+
 class CreateCatalogItemForm(Form):
     name = TextField('Name', validators=[validators.DataRequired()])
     author = TextField('Author', validators=[validators.DataRequired()])
@@ -16,6 +17,7 @@ class CreateCatalogItemForm(Form):
         validators=[validators.DataRequired()]
     )
     image = FileField('Image File')
+
 
 class EditCatalogItemForm(Form):
     name = TextField('Name', validators=[validators.DataRequired()])

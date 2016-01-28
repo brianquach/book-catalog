@@ -150,7 +150,7 @@ def view_catagory_item(catagory_item_id):
             'static',
             filename='uploads/{0}'.format(catagory_item.picture)
         )
-        
+
     if 'user_id' in session:
         is_authorized = catagory_item.user_id == session['user_id']
     return render_template(
@@ -210,7 +210,7 @@ def create_catagory_item():
 
             flash('{0} successfully added!'.format(catagory_item.name))
             return redirect(url_for('dashboard'))
-        
+
     return render_template('create_item.html', form=form)
 
 
@@ -237,7 +237,9 @@ def edit_catagory_item(catagory_item_id):
                 if catagory_item.picture:
                     os.remove(os.path.join(UPLOAD_PATH, catagory_item.picture))
 
-                item_file_path = os.path.join(UPLOAD_PATH + str(catagory_item.id)) 
+                item_file_path = os.path.join(
+                    UPLOAD_PATH + str(catagory_item.id)
+                )
                 if not os.path.isdir(item_file_path):
                     os.makedirs(item_file_path)
 
@@ -428,7 +430,7 @@ def server_oauth_logout():
             response = jsonify(message='Current user not connected.')
             response.status_code = 401
             return response
-    
+
         credentials.revoke(httplib2.Http())
     except err:
         print err
@@ -441,7 +443,7 @@ def server_oauth_logout():
         del session['picture']
         del session['state']
         del session['user_id']
-       
+
     flash('Successfully logged out')
     return jsonify(message='Successfully disconnected.')
 
