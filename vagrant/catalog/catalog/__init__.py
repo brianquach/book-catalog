@@ -12,7 +12,9 @@ from oauth2client.file import Storage
 G_CREDENTIAL_STORAGE = Storage('credential_storage')
 
 # This app's client Id to generate an access token from Google's OAuth API
-CLIENT_ID = '565717878954-k1bhuq7ol4hgflb16m2jbmkfbkt3qumt.apps.googleusercontent.com'  # noqa
+CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read()
+)['web']['client_id']
 
 # File path where catalog item images will be stored at
 UPLOAD_PATH = 'catalog/static/uploads/'

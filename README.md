@@ -34,6 +34,8 @@ In order to install and run Book Catalog follow these instructions:
 git clone https://github.com/brianquach/udacity-nano-fullstack-catalog.git
 ```
 * Navigate to the directory where the code was unzipped or cloned to
+* Add your client_secrets.json file into `/vagrant/catalog` directory. See [generating client_secrets.json](#generating-client_secrets.json) for more details.
+
 * Launch Vagrant VM and SSH into it
 * Navigate to the Book Catalog directory
 ```sh 
@@ -55,8 +57,30 @@ python runserver.py
 * SSH into Vagrant `vagrant ssh`
 * Exit out of Vagrant SSH `exit`
 
+#### Generating client_secrets.json
+At the time of this writing, to create a Google Developers Console project and client ID, follow these steps:
+
+* Go to the [Google Developers Console](https://console.developers.google.com/).
+* Create a new project by selecting **Create a Project** from your projects list:
+  - In the **Project name** field, type in a name for your project.
+  - Your **Project ID** is created by the console for you.
+  - Click the **Create** button and wait for the project to be created.
+* Once created, click on the **Enable and manage APIs** link within the **Use Google APIs** [card](https://www.google.com/design/spec/components/cards.html).
+* In the sidebar under "API Manager", select **Credentials**, and click the **OAuth consent screen** tab.
+  - Choose an **Email Address**, specify a **Product Name**, and click **Save**.
+* In the sidebar under "API Manager", select **Credentials**.
+* Click **Create a new Client ID** — a dialog box appears.
+  - Select **OAuth client ID** 
+  - In the **Application type** section of the dialog, select Web application.
+  - In the **Authorized JavaScript origins field**, enter `http://localhost:8000`
+  - In the **Authorized redirect URI field**, enter `http://localhost:8000/server-connect`
+* Click the **Create Client ID** button.
+* Select the newly created OAuth 2.0 client ID and click on **Download JSON**
+* Rename file to **client_secrets.json**
+
 ## Notes
 In order to be authenticated and authorized to use site function such as adding a book to the catalog, you must have a google+ account to login with.
+
 
 ## JSON and XML RESTful API Examples
 
