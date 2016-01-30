@@ -34,7 +34,7 @@ In order to install and run Book Catalog follow these instructions:
 git clone https://github.com/brianquach/udacity-nano-fullstack-catalog.git
 ```
 * Navigate to the directory where the code was unzipped or cloned to
-* Add your client_secrets.json file into `/vagrant/catalog` directory. See [generating client_secrets.json](####generating-client_secrets.json) for more details.
+* Add your client_secrets.json file into `/vagrant/catalog` directory. See [generating client_secrets.json](#generating-client_secretsjson) for more details.
 
 * Launch Vagrant VM and SSH into it
 * Navigate to the Book Catalog directory
