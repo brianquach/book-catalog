@@ -81,6 +81,8 @@ At the time of this writing, to create a Google Developers Console project and c
 ## Notes
 In order to be authenticated and authorized to use site function such as adding a book to the catalog, you must have a google+ account to login with.
 
+You can add or edit the test data by editing the test_data.json file, which will be loaded and used by `create_db.py`; just follow the given format.
+
 
 ## JSON and XML RESTful API Examples
 
