@@ -21,6 +21,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from functools import wraps
 from oauth2client import client
 from oauth2client.file import Storage
 from werkzeug import secure_filename
@@ -34,6 +35,15 @@ from catalog.forms import EditCatalogItemForm
 from catalog.models import Catagory
 from catalog.models import CatagoryItem
 from catalog.models import User
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.context_processor
@@ -162,6 +172,7 @@ def view_catagory_item(catagory_item_id):
 
 
 @app.route('/item/create', methods=['GET', 'POST'])
+@login_required
 def create_catagory_item():
     """Serve create catagory item page, otherwise create new catagory item.
 
@@ -173,9 +184,6 @@ def create_catagory_item():
     Returns:
       HTML page, otherwise redirect.
     """
-    if 'user_id' not in session:
-        return redirect(url_for('dashboard'))
-
     catagories = Catagory.query.order_by('name').all()
     form = CreateCatalogItemForm(obj=catagories)
     form.catagory_id.choices = [(c.id, c.name) for c in catagories]
@@ -295,6 +303,7 @@ def edit_catagory_item(catagory_item_id):
     '/catagory/<int:catagory_id>/book/<int:catagory_item_id>/delete',
     methods=['GET', 'POST']
 )
+@login_required
 def delete_catagory_item(catagory_id, catagory_item_id):
     """Delete catagory iem page.
 
@@ -304,9 +313,6 @@ def delete_catagory_item(catagory_id, catagory_item_id):
       HTML page, otherwise redirect. If POST respond with JSON
       object.
     """
-    if 'user_id' not in session:
-        return redirect(url_for('dashboard'))
-
     if request.method == 'POST':
         catagory_item = CatagoryItem.\
             query.\
