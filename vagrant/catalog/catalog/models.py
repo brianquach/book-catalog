@@ -78,7 +78,8 @@ class Catagory(db.Model):
     catagory_items = db.relationship(
         'CatagoryItem',
         backref='catagory',
-        lazy='dynamic'
+        lazy='dynamic',
+        cascade='delete, delete-orphan'
     )
 
     def __init__(self, name):
