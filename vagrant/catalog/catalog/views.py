@@ -46,6 +46,27 @@ def login_required(f):
     return decorated_function
 
 
+def owner_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        catagory_item = CatagoryItem.\
+            query.\
+            filter_by(
+                id=kwargs['catagory_item_id'],
+                user_id=session['user_id']
+            ).\
+            first()
+        if catagory_item is None:
+            return redirect(
+                url_for(
+                    'view_catagory_item',
+                    catagory_item_id=kwargs['catagory_item_id']
+                )
+            )
+        return f(catagory_item)
+    return decorated_function
+
+
 @app.context_processor
 def inject_oauth():
     """Inject Catalog application oauth information for use by all templates.
@@ -229,7 +250,9 @@ def create_catagory_item():
 
 
 @app.route('/book/<int:catagory_item_id>/edit', methods=['GET', 'POST'])
-def edit_catagory_item(catagory_item_id):
+@login_required
+@owner_required
+def edit_catagory_item(catagory_item):
     """Serve edit catagory item page, otherwise edie catagory item.
 
     User must be logged in to use this function..
@@ -237,10 +260,6 @@ def edit_catagory_item(catagory_item_id):
     Returns:
       HTML page, otherwise redirect.
     """
-    if 'user_id' not in session:
-        return redirect(url_for('dashboard'))
-
-    catagory_item = CatagoryItem.query.filter_by(id=catagory_item_id).one()
     catagories = Catagory.query.order_by('name').all()
     form = EditCatalogItemForm(obj=catagories)
     form.catagory_id.choices = [(c.id, c.name) for c in catagories]
@@ -284,7 +303,7 @@ def edit_catagory_item(catagory_item_id):
             )
 
         return redirect(
-            url_for('view_catagory_item', catagory_item_id=catagory_item_id)
+            url_for('view_catagory_item', catagory_item_id=catagory_item.id)
         )
     else:
         form.name.data = catagory_item.name
@@ -295,16 +314,14 @@ def edit_catagory_item(catagory_item_id):
         'edit_item.html',
         form=form,
         item=catagory_item,
-        catagory_item_id=catagory_item_id
+        catagory_item_id=catagory_item.id
     )
 
 
-@app.route(
-    '/catagory/<int:catagory_id>/book/<int:catagory_item_id>/delete',
-    methods=['GET', 'POST']
-)
+@app.route('/book/<int:catagory_item_id>/delete', methods=['GET', 'POST'])
 @login_required
-def delete_catagory_item(catagory_id, catagory_item_id):
+@owner_required
+def delete_catagory_item(catagory_item):
     """Delete catagory iem page.
 
     If user is authorized, confirm delete book intention.
@@ -314,11 +331,6 @@ def delete_catagory_item(catagory_id, catagory_item_id):
       object.
     """
     if request.method == 'POST':
-        catagory_item = CatagoryItem.\
-            query.\
-            filter_by(id=catagory_item_id).\
-            one()
-
         if catagory_item.picture:
             relative_path = catagory_item.picture
             image_file_path = UPLOAD_PATH + relative_path
@@ -332,8 +344,8 @@ def delete_catagory_item(catagory_id, catagory_item_id):
         return jsonify(isDeleted=True)
     return render_template(
         'delete_item.html',
-        catagory_id=catagory_id,
-        catagory_item_id=catagory_item_id
+        catagory_id=catagory_item.catagory_id,
+        catagory_item_id=catagory_item.id
     )
 
 
